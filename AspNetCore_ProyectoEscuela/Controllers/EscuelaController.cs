@@ -9,9 +9,15 @@ namespace AspNetCore_ProyectoEscuela.Controllers
         public IActionResult Index()
         {
             var escuela = new Escuela();
-            escuela.AnioFundacion = 2005;
-            escuela.EscualaId = Guid.NewGuid().ToString();
+            escuela.AnioDeCreacion = 2005;
+            escuela.UniqueId = Guid.NewGuid().ToString();
             escuela.Nombre = "Platzi";
+            escuela.Ciudad = "Merida";
+            escuela.Pais = "Mexico";
+            escuela.Direccion = "Colonia Mexico";
+            escuela.TipoEscuela = TiposEscuela.Secundaria;
+
+            
             return View(escuela);
         }
     }
