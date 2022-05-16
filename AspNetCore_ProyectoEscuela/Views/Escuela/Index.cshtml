@@ -1,0 +1,13 @@
+﻿@*@page
+@model AspNetCore_ProyectoEscuela.Views.Escuela.IndexModel*@
+
+@Model Escuela
+
+@{
+    ViewData["Title"] = "Escuela Informatica";
+    Layout = "_Layout";
+}
+    <h1>Escuela</h1>
+    <h2>Nombre: @Model.Nombre </h2>
+    <p><strong>Año Fundación: @Model.AnioFundacion </strong></p>
+
