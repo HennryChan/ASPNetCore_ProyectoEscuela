@@ -7,82 +7,116 @@ namespace AspNetCore_ProyectoEscuela.Models
 {
     public class EscuelaContext: DbContext
     {
-        public DbSet<Escuela> Escuelas { get; set; }
-        public DbSet<Asignatura> Asignaturas { get; set; }
-        public DbSet<Alumno> Alumnos { get; set; }
-        public DbSet<Curso> Cursos { get; set; }
-        public DbSet<Evaluacion> Evaluaciones { get; set; }
+            public DbSet<Escuela> Escuelas { get; set; }
+            public DbSet<Asignatura> Asignaturas { get; set; }
+            public DbSet<Alumno> Alumnos { get; set; }
+            public DbSet<Curso> Cursos { get; set; }
+            public DbSet<Evaluacion> Evaluaciones { get; set; }
 
-        public EscuelaContext(DbContextOptions<EscuelaContext> options) : base(options)
-        {
+            public EscuelaContext(DbContextOptions<EscuelaContext> options) : base(options)
+            {
 
-        }
+            }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
+            protected override void OnModelCreating(ModelBuilder modelBuilder)
+            {
+                base.OnModelCreating(modelBuilder);
 
-            var escuela = new Escuela();
-            escuela.AnioDeCreacion = 2005;
-            escuela.UniqueId = Guid.NewGuid().ToString();
-            escuela.Nombre = "Platzi School";
-            escuela.Ciudad = "Bogota";
-            escuela.Pais = "Colombia";
-            escuela.Direccion = "Avd Siempre viva";
-            escuela.TipoEscuela = TiposEscuela.Secundaria;
+                var escuela = new Escuela();
+                escuela.AnioDeCreacion = 2005;
+                escuela.UniqueId = Guid.NewGuid().ToString();
+                escuela.Nombre = "Platzi School";
+                escuela.Ciudad = "Bogota";
+                escuela.Pais = "Colombia";
+                escuela.Direccion = "Avd Siempre viva";
+                escuela.TipoEscuela = TiposEscuela.Secundaria;
 
-            modelBuilder.Entity<Escuela>().HasData(escuela);
+                //Cargar Cursos de la escuela
+                var cursos = CargarCursos(escuela);
 
-            modelBuilder.Entity<Asignatura>().HasData(
-                           new Asignatura
-                           {
-                               Nombre = "Matemáticas",
-                               UniqueId = Guid.NewGuid().ToString()
-                           },
-                            new Asignatura
-                            {
-                                Nombre = "Educación Física",
-                                UniqueId = Guid.NewGuid().ToString()
-                            },
-                            new Asignatura
-                            {
-                                Nombre = "Castellano",
-                                UniqueId = Guid.NewGuid().ToString()
-                            },
-                            new Asignatura
-                            {
-                                Nombre = "Ciencias Naturales",
-                                UniqueId = Guid.NewGuid().ToString()
-                            }
-                            ,
-                            new Asignatura
-                            {
-                                Nombre = "Programación",
-                                UniqueId = Guid.NewGuid().ToString()
-                            }
-                           );
+                //x cada curso cargar asignaturas
+                var asignaturas = CargarAsignaturas(cursos);
 
-            modelBuilder.Entity<Alumno>()
-                        .HasData(GenerarAlumnosAlAzar().ToArray());
-        }
+                //x cada curso cargar alumnos
+                var alumnos = CargarAlumnos(cursos);
 
-        private List<Alumno> GenerarAlumnosAlAzar()
-        {
-            string[] nombre1 = { "Alba", "Felipa", "Eusebio", "Farid", "Donald", "Alvaro", "Nicolás" };
-            string[] apellido1 = { "Ruiz", "Sarmiento", "Uribe", "Maduro", "Trump", "Toledo", "Herrera" };
-            string[] nombre2 = { "Freddy", "Anabel", "Rick", "Murty", "Silvana", "Diomedes", "Nicomedes", "Teodoro" };
+                modelBuilder.Entity<Escuela>().HasData(escuela);
+                modelBuilder.Entity<Curso>().HasData(cursos.ToArray());
+                modelBuilder.Entity<Asignatura>().HasData(asignaturas.ToArray());
+                modelBuilder.Entity<Alumno>().HasData(alumnos.ToArray());
+            }
 
-            var listaAlumnos = from n1 in nombre1
-                               from n2 in nombre2
-                               from a1 in apellido1
-                               select new Alumno
-                               {
-                                   Nombre = $"{n1} {n2} {a1}",
-                                   UniqueId = Guid.NewGuid().ToString()
-                               };
+            private List<Alumno> CargarAlumnos(List<Curso> cursos)
+            {
+                var listaAlumnos = new List<Alumno>();
 
-            return listaAlumnos.OrderBy((al) => al.UniqueId).ToList();
-        }
+                Random rnd = new Random();
+                foreach (var curso in cursos)
+                {
+                    int cantRandom = rnd.Next(5, 20);
+                    var tmplist = GenerarAlumnosAlAzar(curso, cantRandom);
+                    listaAlumnos.AddRange(tmplist);
+                }
+                return listaAlumnos;
+            }
 
+            private static List<Asignatura> CargarAsignaturas(List<Curso> cursos)
+            {
+                var listaCompleta = new List<Asignatura>();
+                foreach (var curso in cursos)
+                {
+                    var tmpList = new List<Asignatura> {
+                            new Asignatura{
+                                UniqueId = Guid.NewGuid().ToString(),
+                                CursoId = curso.UniqueId,
+                                Nombre="Matemáticas"} ,
+                            new Asignatura{UniqueId = Guid.NewGuid().ToString(), CursoId = curso.UniqueId, Nombre="Educación Física"},
+                            new Asignatura{UniqueId = Guid.NewGuid().ToString(), CursoId = curso.UniqueId, Nombre="Castellano"},
+                            new Asignatura{UniqueId = Guid.NewGuid().ToString(), CursoId = curso.UniqueId, Nombre="Ciencias Naturales"},
+                            new Asignatura{UniqueId = Guid.NewGuid().ToString(), CursoId = curso.UniqueId, Nombre="Programación"}
+
+                };
+                    listaCompleta.AddRange(tmpList);
+                    //curso.Asignaturas = tmpList;
+                }
+
+                return listaCompleta;
+            }
+
+            private static List<Curso> CargarCursos(Escuela escuela)
+            {
+                return new List<Curso>(){
+                        new Curso() {
+                            UniqueId = Guid.NewGuid().ToString(),
+                            EscuelaId = escuela.UniqueId,
+                            Nombre = "101",
+                            Jornada = TiposJornada.Mañana },
+                        new Curso() {UniqueId = Guid.NewGuid().ToString(), EscuelaId = escuela.UniqueId, Nombre = "201", Jornada = TiposJornada.Mañana},
+                        new Curso   {UniqueId = Guid.NewGuid().ToString(), EscuelaId = escuela.UniqueId, Nombre = "301", Jornada = TiposJornada.Mañana},
+                        new Curso() {UniqueId = Guid.NewGuid().ToString(), EscuelaId = escuela.UniqueId, Nombre = "401", Jornada = TiposJornada.Tarde },
+                        new Curso() {UniqueId = Guid.NewGuid().ToString(), EscuelaId = escuela.UniqueId, Nombre = "501", Jornada = TiposJornada.Tarde},
+            };
+            }
+
+            private List<Alumno> GenerarAlumnosAlAzar(
+                Curso curso,
+                int cantidad)
+            {
+                string[] nombre1 = { "Alba", "Felipa", "Eusebio", "Farid", "Donald", "Alvaro", "Nicolás" };
+                string[] apellido1 = { "Ruiz", "Sarmiento", "Uribe", "Maduro", "Trump", "Toledo", "Herrera" };
+                string[] nombre2 = { "Freddy", "Anabel", "Rick", "Murty", "Silvana", "Diomedes", "Nicomedes", "Teodoro" };
+
+                var listaAlumnos = from n1 in nombre1
+                                   from n2 in nombre2
+                                   from a1 in apellido1
+                                   select new Alumno
+                                   {
+                                       CursoId = curso.UniqueId,
+                                       Nombre = $"{n1} {n2} {a1}",
+                                       UniqueId = Guid.NewGuid().ToString()
+                                   };
+
+                return listaAlumnos.OrderBy((al) => al.UniqueId).Take(cantidad).ToList();
+            }
     }
 }

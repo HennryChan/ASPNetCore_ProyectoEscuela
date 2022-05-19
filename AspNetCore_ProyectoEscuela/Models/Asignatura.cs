@@ -5,8 +5,8 @@ namespace AspNetCore_ProyectoEscuela.Models
 {
     public class Asignatura:ObjetoEscuelaBase
     {
-        public string cursoId { get; set; }
-        public Curso curso { get; set; }
+        public string CursoId { get; set; }
+        public Curso Curso { get; set; }
 
         public List<Evaluacion> Evaluaciones { get; set; }
     }
