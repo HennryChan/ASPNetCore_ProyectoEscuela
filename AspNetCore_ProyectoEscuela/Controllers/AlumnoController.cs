@@ -8,13 +8,27 @@ namespace AspNetCore_ProyectoEscuela.Controllers
 {
     public class AlumnoController:Controller
     {
-        public IActionResult Index()
+
+        private EscuelaContext _context;
+        public AlumnoController(EscuelaContext context)
         {
-            return View(new Alumno
+            _context = context;
+        }
+
+        public IActionResult Index(string id)
+        {
+            if (!string.IsNullOrWhiteSpace(id))
             {
-                Nombre = "Pepe Perez",
-                UniqueId = Guid.NewGuid().ToString()
-            });
+                var alumno = from alumn in _context.Alumnos
+                             where alumn.Id == id
+                             select alumn;
+
+                return View(alumno.SingleOrDefault());
+            }
+            else
+            {
+                return View("MultiAlumno", _context.Alumnos);
+            }
         }
 
         public IActionResult MultiAlumno()
@@ -39,11 +53,10 @@ namespace AspNetCore_ProyectoEscuela.Controllers
                                select new Alumno
                                {
                                    Nombre = $"{n1} {n2} {a1}",
-                                   UniqueId = Guid.NewGuid().ToString()
+                                   Id = Guid.NewGuid().ToString()
                                };
 
-            return listaAlumnos.OrderBy((al) => al.UniqueId).ToList();
+            return listaAlumnos.OrderBy((al) => al.Id).ToList();
         }
-
     }
 }

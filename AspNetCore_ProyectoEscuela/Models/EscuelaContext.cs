@@ -24,7 +24,7 @@ namespace AspNetCore_ProyectoEscuela.Models
 
                 var escuela = new Escuela();
                 escuela.AnioDeCreacion = 2005;
-                escuela.UniqueId = Guid.NewGuid().ToString();
+                escuela.Id = Guid.NewGuid().ToString();
                 escuela.Nombre = "Platzi School";
                 escuela.Ciudad = "Bogota";
                 escuela.Pais = "Colombia";
@@ -67,13 +67,13 @@ namespace AspNetCore_ProyectoEscuela.Models
                 {
                     var tmpList = new List<Asignatura> {
                             new Asignatura{
-                                UniqueId = Guid.NewGuid().ToString(),
-                                CursoId = curso.UniqueId,
+                                Id = Guid.NewGuid().ToString(),
+                                CursoId = curso.Id,
                                 Nombre="Matemáticas"} ,
-                            new Asignatura{UniqueId = Guid.NewGuid().ToString(), CursoId = curso.UniqueId, Nombre="Educación Física"},
-                            new Asignatura{UniqueId = Guid.NewGuid().ToString(), CursoId = curso.UniqueId, Nombre="Castellano"},
-                            new Asignatura{UniqueId = Guid.NewGuid().ToString(), CursoId = curso.UniqueId, Nombre="Ciencias Naturales"},
-                            new Asignatura{UniqueId = Guid.NewGuid().ToString(), CursoId = curso.UniqueId, Nombre="Programación"}
+                            new Asignatura{Id = Guid.NewGuid().ToString(), CursoId = curso.Id, Nombre="Educación Física"},
+                            new Asignatura{Id = Guid.NewGuid().ToString(), CursoId = curso.Id, Nombre="Castellano"},
+                            new Asignatura{Id = Guid.NewGuid().ToString(), CursoId = curso.Id, Nombre="Ciencias Naturales"},
+                            new Asignatura{Id = Guid.NewGuid().ToString(), CursoId = curso.Id, Nombre="Programación"}
 
                 };
                     listaCompleta.AddRange(tmpList);
@@ -87,14 +87,14 @@ namespace AspNetCore_ProyectoEscuela.Models
             {
                 return new List<Curso>(){
                         new Curso() {
-                            UniqueId = Guid.NewGuid().ToString(),
-                            EscuelaId = escuela.UniqueId,
+                            Id = Guid.NewGuid().ToString(),
+                            EscuelaId = escuela.Id,
                             Nombre = "101",
                             Jornada = TiposJornada.Mañana },
-                        new Curso() {UniqueId = Guid.NewGuid().ToString(), EscuelaId = escuela.UniqueId, Nombre = "201", Jornada = TiposJornada.Mañana},
-                        new Curso   {UniqueId = Guid.NewGuid().ToString(), EscuelaId = escuela.UniqueId, Nombre = "301", Jornada = TiposJornada.Mañana},
-                        new Curso() {UniqueId = Guid.NewGuid().ToString(), EscuelaId = escuela.UniqueId, Nombre = "401", Jornada = TiposJornada.Tarde },
-                        new Curso() {UniqueId = Guid.NewGuid().ToString(), EscuelaId = escuela.UniqueId, Nombre = "501", Jornada = TiposJornada.Tarde},
+                        new Curso() {Id = Guid.NewGuid().ToString(), EscuelaId = escuela.Id, Nombre = "201", Jornada = TiposJornada.Mañana},
+                        new Curso   {Id = Guid.NewGuid().ToString(), EscuelaId = escuela.Id, Nombre = "301", Jornada = TiposJornada.Mañana},
+                        new Curso() {Id = Guid.NewGuid().ToString(), EscuelaId = escuela.Id, Nombre = "401", Jornada = TiposJornada.Tarde },
+                        new Curso() {Id = Guid.NewGuid().ToString(), EscuelaId = escuela.Id, Nombre = "501", Jornada = TiposJornada.Tarde},
             };
             }
 
@@ -111,12 +111,12 @@ namespace AspNetCore_ProyectoEscuela.Models
                                    from a1 in apellido1
                                    select new Alumno
                                    {
-                                       CursoId = curso.UniqueId,
+                                       CursoId = curso.Id,
                                        Nombre = $"{n1} {n2} {a1}",
-                                       UniqueId = Guid.NewGuid().ToString()
+                                       Id = Guid.NewGuid().ToString()
                                    };
 
-                return listaAlumnos.OrderBy((al) => al.UniqueId).Take(cantidad).ToList();
+                return listaAlumnos.OrderBy((al) => al.Id).Take(cantidad).ToList();
             }
     }
 }

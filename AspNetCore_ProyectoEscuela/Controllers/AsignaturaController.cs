@@ -1,46 +1,43 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AspNetCore_ProyectoEscuela.Models;
 using System;
+using System.Linq;
 using System.Collections.Generic;
 
 namespace AspNetCore_ProyectoEscuela.Controllers
 {
     public class AsignaturaController:Controller
     {
-        public IActionResult Index()
+        [Route("Asignatura/Index")]
+        [Route("Asignatura/Index/{asignaturaId}")]
+        public IActionResult Index(string asignaturaId)
         {
-            return View(new Asignatura
+            if (!string.IsNullOrWhiteSpace(asignaturaId))
             {
-                Nombre = "Programación",
-                UniqueId = Guid.NewGuid().ToString()
-            });
+                var asignatura = from asig in _context.Asignaturas
+                                 where asig.Id == asignaturaId
+                                 select asig;
+
+                return View(asignatura.SingleOrDefault());
+            }
+            else
+            {
+                return View("MultiAsignatura", _context.Asignaturas);
+            }
         }
 
         public IActionResult MultiAsignatura()
         {
-            var listaAsignaturas = new List<Asignatura>(){
-                            new Asignatura{Nombre="Matemáticas",
-                                UniqueId= Guid.NewGuid().ToString()
-                            } ,
-                            new Asignatura{Nombre="Educación Física",
-                                UniqueId= Guid.NewGuid().ToString()
-                            },
-                            new Asignatura{Nombre="Castellano",
-                                UniqueId= Guid.NewGuid().ToString()
-                            },
-                            new Asignatura{Nombre="Ciencias Naturales",
-                                UniqueId= Guid.NewGuid().ToString()
-                            }
-                            ,
-                            new Asignatura{Nombre="Programación",
-                                UniqueId= Guid.NewGuid().ToString()
-                            }
-                };
-
             ViewBag.CosaDinamica = "La Monja";
             ViewBag.Fecha = DateTime.Now;
 
-            return View("MultiAsignatura", listaAsignaturas);
+            return View("MultiAsignatura", _context.Asignaturas);
+        }
+
+        private EscuelaContext _context;
+        public AsignaturaController(EscuelaContext context)
+        {
+            _context = context;
         }
     }
 }
