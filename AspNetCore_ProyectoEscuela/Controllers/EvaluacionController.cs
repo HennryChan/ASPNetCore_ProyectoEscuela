@@ -9,22 +9,23 @@ using AspNetCore_ProyectoEscuela.Models;
 
 namespace AspNetCore_ProyectoEscuela.Controllers
 {
-    public class EscuelaController : Controller
+    public class EvaluacionController : Controller
     {
         private readonly EscuelaContext _context;
 
-        public EscuelaController(EscuelaContext context)
+        public EvaluacionController(EscuelaContext context)
         {
             _context = context;
         }
 
-        // GET: Escuela
+        // GET: Evaluación
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Escuelas.ToListAsync());
+            var escuelaContext = _context.Evaluaciones.Include(e => e.Alumno).Include(e => e.Asignatura);
+            return View(await escuelaContext.ToListAsync());
         }
 
-        // GET: Escuela/Details/5
+        // GET: Evaluación/Details/5
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -32,39 +33,45 @@ namespace AspNetCore_ProyectoEscuela.Controllers
                 return NotFound();
             }
 
-            var escuela = await _context.Escuelas
+            var evaluación = await _context.Evaluaciones
+                .Include(e => e.Alumno)
+                .Include(e => e.Asignatura)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (escuela == null)
+            if (evaluación == null)
             {
                 return NotFound();
             }
 
-            return View(escuela);
+            return View(evaluación);
         }
 
-        // GET: Escuela/Create
+        // GET: Evaluación/Create
         public IActionResult Create()
         {
+            ViewData["AlumnoId"] = new SelectList(_context.Alumnos, "Id", "Id");
+            ViewData["AsignaturaId"] = new SelectList(_context.Asignaturas, "Id", "Id");
             return View();
         }
 
-        // POST: Escuela/Create
+        // POST: Evaluación/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("AnioDeCreacion,Pais,Ciudad,Direccion,TipoEscuela,Id,Nombre")] Escuela escuela)
+        public async Task<IActionResult> Create([Bind("AlumnoId,AsignaturaId,Nota,Id,Nombre")] Evaluacion evaluacion)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(escuela);
+                _context.Add(evaluacion);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(escuela);
+            ViewData["AlumnoId"] = new SelectList(_context.Alumnos, "Id", "Id", evaluacion.AlumnoId);
+            ViewData["AsignaturaId"] = new SelectList(_context.Asignaturas, "Id", "Id", evaluacion.AsignaturaId);
+            return View(evaluacion);
         }
 
-        // GET: Escuela/Edit/5
+        // GET: Evaluación/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -72,22 +79,24 @@ namespace AspNetCore_ProyectoEscuela.Controllers
                 return NotFound();
             }
 
-            var escuela = await _context.Escuelas.FindAsync(id);
-            if (escuela == null)
+            var evaluación = await _context.Evaluaciones.FindAsync(id);
+            if (evaluación == null)
             {
                 return NotFound();
             }
-            return View(escuela);
+            ViewData["AlumnoId"] = new SelectList(_context.Alumnos, "Id", "Id", evaluación.AlumnoId);
+            ViewData["AsignaturaId"] = new SelectList(_context.Asignaturas, "Id", "Id", evaluación.AsignaturaId);
+            return View(evaluación);
         }
 
-        // POST: Escuela/Edit/5
+        // POST: Evaluación/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, [Bind("AnioDeCreacion,Pais,Ciudad,Direccion,TipoEscuela,Id,Nombre")] Escuela escuela)
+        public async Task<IActionResult> Edit(string id, [Bind("AlumnoId,AsignaturaId,Nota,Id,Nombre")] Evaluacion evaluacion)
         {
-            if (id != escuela.Id)
+            if (id != evaluacion.Id)
             {
                 return NotFound();
             }
@@ -96,12 +105,12 @@ namespace AspNetCore_ProyectoEscuela.Controllers
             {
                 try
                 {
-                    _context.Update(escuela);
+                    _context.Update(evaluacion);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!EscuelaExists(escuela.Id))
+                    if (!EvaluaciónExists(evaluacion.Id))
                     {
                         return NotFound();
                     }
@@ -112,10 +121,12 @@ namespace AspNetCore_ProyectoEscuela.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(escuela);
+            ViewData["AlumnoId"] = new SelectList(_context.Alumnos, "Id", "Id", evaluacion.AlumnoId);
+            ViewData["AsignaturaId"] = new SelectList(_context.Asignaturas, "Id", "Id", evaluacion.AsignaturaId);
+            return View(evaluacion);
         }
 
-        // GET: Escuela/Delete/5
+        // GET: Evaluación/Delete/5
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -123,30 +134,32 @@ namespace AspNetCore_ProyectoEscuela.Controllers
                 return NotFound();
             }
 
-            var escuela = await _context.Escuelas
+            var evaluación = await _context.Evaluaciones
+                .Include(e => e.Alumno)
+                .Include(e => e.Asignatura)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (escuela == null)
+            if (evaluación == null)
             {
                 return NotFound();
             }
 
-            return View(escuela);
+            return View(evaluación);
         }
 
-        // POST: Escuela/Delete/5
+        // POST: Evaluación/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var escuela = await _context.Escuelas.FindAsync(id);
-            _context.Escuelas.Remove(escuela);
+            var evaluación = await _context.Evaluaciones.FindAsync(id);
+            _context.Evaluaciones.Remove(evaluación);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool EscuelaExists(string id)
+        private bool EvaluaciónExists(string id)
         {
-            return _context.Escuelas.Any(e => e.Id == id);
+            return _context.Evaluaciones.Any(e => e.Id == id);
         }
     }
 }

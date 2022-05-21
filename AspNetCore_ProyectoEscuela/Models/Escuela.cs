@@ -17,9 +17,12 @@ namespace AspNetCore_ProyectoEscuela.Models
 
         public Escuela(string nombre, int año) => (Nombre, AnioDeCreacion) = (nombre, año);
 
-        public Escuela(string nombre, int año, TiposEscuela tipo, string pais = "", string ciudad = "") : base()
+        public Escuela(string nombre, int año,
+                       TiposEscuela tipoEscuela,
+                       string pais = "", string ciudad = "") : base()
         {
             (Nombre, AnioDeCreacion) = (nombre, año);
+            TipoEscuela = tipoEscuela;
             Pais = pais;
             Ciudad = ciudad;
         }
@@ -32,6 +35,5 @@ namespace AspNetCore_ProyectoEscuela.Models
         {
             return $"Nombre: \"{Nombre}\", Tipo: {TipoEscuela} {System.Environment.NewLine} Pais: {Pais}, Ciudad:{Ciudad}";
         }
-
     }
 }
