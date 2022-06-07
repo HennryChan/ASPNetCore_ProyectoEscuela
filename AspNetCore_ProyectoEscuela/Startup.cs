@@ -35,10 +35,17 @@ namespace AspNetCore_ProyectoEscuela
             });
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             services.AddDbContext<EscuelaContext>(
                 options => options.UseInMemoryDatabase(databaseName: "testDB")
+
+            //string connString = ConfigurationExtensions
+            //                     .GetConnectionString(this.Configuration,
+            //                     "DefaultConnectionString");
+
+            //services.AddDbContext<EscuelaContext>(
+            //        options => options.UseSqlServer(connString)
             );
         }
 

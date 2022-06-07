@@ -1,9 +1,11 @@
-
-public enum LlaveDiccionario
+namespace AspNetCore_ProyectoEscuela.Models
 {
-    Escuela ,
-    Curso,
-    Alumno,
-    Asignatura,
-    Evaluación
+    public enum LlaveDiccionario
+    {
+        Escuela,
+        Curso,
+        Alumno,
+        Asignatura,
+        Evaluación
+    }
 }

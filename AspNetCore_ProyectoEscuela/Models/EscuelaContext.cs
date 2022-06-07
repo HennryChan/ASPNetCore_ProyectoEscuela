@@ -97,9 +97,9 @@ namespace AspNetCore_ProyectoEscuela.Models
                          EscuelaId = escuela.Id, Nombre = "201",
                          Direccion="Avenida siempre viva",
                          Jornada = TiposJornada.Mañana},
-                        new Curso   {Id = Guid.NewGuid().ToString(), EscuelaId = escuela.Id, Nombre = "301",Direccion="Avenida siempre viva", Jornada = TiposJornada.Mañana},
+                        new Curso() {Id = Guid.NewGuid().ToString(), EscuelaId = escuela.Id, Nombre = "301",Direccion="Avenida siempre viva", Jornada = TiposJornada.Mañana},
                         new Curso() {Id = Guid.NewGuid().ToString(), EscuelaId = escuela.Id, Nombre = "401", Direccion="Avenida siempre viva",Jornada = TiposJornada.Tarde },
-                        new Curso() {Id = Guid.NewGuid().ToString(), EscuelaId = escuela.Id, Nombre = "501", Direccion="Avenida siempre viva",Jornada = TiposJornada.Tarde},
+                        new Curso() {Id = Guid.NewGuid().ToString(), EscuelaId = escuela.Id, Nombre = "501", Direccion="Avenida siempre viva",Jornada = TiposJornada.Tarde}
             };
         }
 
